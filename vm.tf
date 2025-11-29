@@ -1,3 +1,66 @@
+# 1. PUBLIC IP: Створення публічної IP-адреси
+resource "azurerm_public_ip" "main" {
+  name                = "${var.prefix}-pip"
+  location            = data.azurerm_resource_group.existing.location
+  resource_group_name = data.azurerm_resource_group.existing.name
+  allocation_method   = "Static"
+  # ВИПРАВЛЕННЯ: Рекомендовано Standard
+  sku = "Standard"
+}
+
+# 2. NETWORK SECURITY GROUP (NSG): Відкриваємо порти 22 (SSH) та 80 (HTTP)
+resource "azurerm_network_security_group" "main" {
+  name                = "${var.prefix}-nsg"
+  location            = data.azurerm_resource_group.existing.location
+  resource_group_name = data.azurerm_resource_group.existing.name
+
+  security_rule {
+    name                       = "SSH"
+    priority                   = 100
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "Tcp"
+    source_port_range          = "*"
+    destination_port_range     = "22"
+    source_address_prefix      = "*"
+    destination_address_prefix = "*"
+  }
+
+  security_rule {
+    name                       = "HTTP"
+    priority                   = 101
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "Tcp"
+    source_port_range          = "*"
+    destination_port_range     = "80"
+    source_address_prefix      = "*"
+    destination_address_prefix = "*"
+  }
+}
+
+# 3. NETWORK INTERFACE CARD (NIC)
+resource "azurerm_network_interface" "main" {
+  name                = "${var.prefix}-nic"
+  location            = data.azurerm_resource_group.existing.location
+  resource_group_name = data.azurerm_resource_group.existing.name
+
+  ip_configuration {
+    name = "testconfiguration1"
+    # ЗМІНА: Використовуємо subnet_id з data-блоку
+    subnet_id                     = data.azurerm_subnet.internal.id
+    private_ip_address_allocation = "Dynamic"
+    public_ip_address_id          = azurerm_public_ip.main.id
+  }
+}
+
+# 4. Прив'язка NSG до NIC
+resource "azurerm_network_interface_security_group_association" "main" {
+  network_interface_id      = azurerm_network_interface.main.id
+  network_security_group_id = azurerm_network_security_group.main.id
+}
+
+# 5. VIRTUAL MACHINE (VM)
 resource "azurerm_virtual_machine" "main" {
   name                  = "${var.prefix}-vm"
   location              = data.azurerm_resource_group.existing.location
@@ -43,6 +106,7 @@ resource "azurerm_virtual_machine" "main" {
       user     = var.admin_username
       password = var.admin_password
       host     = azurerm_public_ip.main.ip_address
+      timeout  = "5m"
     }
   }
 
@@ -59,7 +123,8 @@ resource "azurerm_virtual_machine" "main" {
     inline = [
       "sudo apt-get update -y",
       "sudo apt-get install -y nginx",
-      "sudo cp /tmp/index.html /var/www/html/index.nginx-debian.html",
+      # ВИПРАВЛЕННЯ: Змінено шлях з index.nginx-debian.html на index.html
+      "sudo cp /tmp/index.html /var/www/html/index.html",
       "sudo systemctl restart nginx",
     ]
   }

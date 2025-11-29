@@ -5,8 +5,7 @@ variable "prefix" {
 
 variable "rg_name" {
   description = "Ім'я вручну створеної Resource Group"
-  # Використовуємо ім'я, яке ви створили:
-  default = "nginx-hosting-rg"
+  default     = "nginx-hosting-rg"
 }
 
 variable "admin_username" {
