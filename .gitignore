@@ -1,0 +1,24 @@
+# Terraform Files to ignore
+
+# Файл, що містить стан інфраструктури. ЧУТЛИВА ІНФОРМАЦІЯ!
+*.tfstate
+*.tfstate.backup
+
+# Файли, створені після init (завантажені провайдери)
+.terraform/
+
+# Файли з планом виконання
+*.tfplan
+
+# Файли, створені provisioners (наприклад, network_conf.txt)
+deployed_ips.txt
+network_conf.txt
+
+# Локальні файли VS Code
+.vscode/
+
+# Уникаємо .tfvars, якщо ви його використовуєте
+# *.tfvars
+
+# Локальний файл блокування провайдерів (часто ігнорують, але можна і залишити)
+.terraform.lock.hcl

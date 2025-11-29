@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terraform Nginx Provisioning Success</title>
+    <style>
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            height: 100vh; 
+            margin: 0; 
+            background-color: #e9f5e9; /* Light green background */
+            color: #333; 
+        }
+        .container { 
+            text-align: center; 
+            background: white; 
+            padding: 50px; 
+            border-radius: 12px; 
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1); 
+            border-left: 5px solid #4CAF50; 
+            max-width: 600px;
+        }
+        h1 { 
+            color: #4CAF50; /* Green */
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+        p { 
+            font-size: 1.1em; 
+            line-height: 1.6;
+            margin-bottom: 5px;
+        }
+        .provisioner-detail {
+            font-weight: bold;
+            color: #0078D4; /* Azure Blue */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>✅ УСПІХ! NGINX Встановлено!</h1>
+        <p>Веб-сервер Nginx успішно розгорнуто на Azure Virtual Machine.</p>
+        <hr style="width: 50%; margin: 20px auto; border-color: #ddd;">
+        <p>Ця сторінка була доставлена та налаштована за допомогою:</p>
+        <p class="provisioner-detail">1. File Provisioner (для завантаження файлу)</p>
+        <p class="provisioner-detail">2. Remote-Exec Provisioner (для встановлення Nginx та заміни сторінки)</p>
+    </div>
+</body>
+</html>
